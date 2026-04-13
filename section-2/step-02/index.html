@@ -1,0 +1,3042 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://quarkus.io/quarkus-workshop-langchain4j/section-2/step-02/">
+      
+      
+        <link rel="prev" href="../step-01/">
+      
+      
+        <link rel="next" href="../step-03/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../images/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Step 2 - Creating simple agentic workflows - Quarkus LangChain4j Workshop</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CUbuntu+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Ubuntu Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../extra.css">
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/panzoom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <meta name="panzoom-theme" content="material">
+<meta name="panzoom-data" content='{"selectors": [".d2", ".mermaid"], "initial_zoom_level": 1.0}'> </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#step-02-composing-simple-agentic-workflows" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+You are not viewing the latest version.
+<a href="../../..">
+    <strong>Click here to go to latest.</strong>
+</a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),base=new URL("../.."),outdated=__md_get("__outdated",sessionStorage,base);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Quarkus LangChain4j Workshop" class="md-header__button md-logo" aria-label="Quarkus LangChain4j Workshop" data-md-component="logo">
+      
+  <img src="../../images/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Quarkus LangChain4j Workshop
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Step 2 - Creating simple agentic workflows
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H6zm7-4.68V17c0 .55-.45 1-1 1H6c-.55 0-1-.45-1-1v-2.26C3.19 13.47 2 11.38 2 9c0-3.87 3.13-7 7-7 1.65 0 3.16.57 4.35 1.5C10.8 4.57 9 7.07 9 10c0 2.79 1.64 5.19 4 6.32m7.92-6.38-1.42-.91-1.4.97.4-1.65-1.33-1.03 1.68-.11.56-1.61.63 1.58 1.68.04-1.3 1.08zM19.39 13c-1.89 2.27-5.36 2.19-7.17-.05C10 10.13 11.56 6 15 5.34c.34-.05.64.29.5.63-.45 1.28-.38 2.74.35 4a4.62 4.62 0 0 0 3.27 2.28c.35.05.5.49.27.75"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="orange"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 6a6 6 0 0 1 6 6c0 2.22-1.21 4.16-3 5.2V19a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-1.8c-1.79-1.04-3-2.98-3-5.2a6 6 0 0 1 6-6m2 15v1a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-1zm6-10h3v2h-3zM1 11h3v2H1zM13 1v3h-2V1zM4.92 3.5l2.13 2.14-1.42 1.41L3.5 4.93zm12.03 2.13 2.12-2.13 1.43 1.43-2.13 2.12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/quarkusio/quarkus-langchain4j-workshop" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Quarkus LangChain4j Workshop" class="md-nav__button md-logo" aria-label="Quarkus LangChain4j Workshop" data-md-component="logo">
+      
+  <img src="../../images/logo.png" alt="logo">
+
+    </a>
+    Quarkus LangChain4j Workshop
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/quarkusio/quarkus-langchain4j-workshop" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Section 1 - AI Apps
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Section 1 - AI Apps
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../section-1/step-01/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 1 - Introduction to Quarkus LangChain4j
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../section-1/step-02/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 2 - Playing with model parameters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../section-1/step-03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 3 - Streaming responses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../section-1/step-04/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 4 - Using system messages
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../section-1/step-05/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 5 - Introduction to the RAG pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../section-1/step-06/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 6 - Deconstructing the RAG
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../section-1/step-07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 7 - Function calling and tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../section-1/step-08/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 8 - Model Context Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../section-1/step-09/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 9 - Guardrails
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../section-1/step-10/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 10 - Observability and Fault Tolerance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Section 2 - Agentic Workflows
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Section 2 - Agentic Workflows
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../step-01/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 1 - Implementing AI Agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 2 - Creating simple agentic workflows
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 2 - Creating simple agentic workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#agentic-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agentic Workflows
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-requirement-track-car-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Requirement: Track Car Conditions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-youll-learn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What You&rsquo;ll Learn
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understanding Workflows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Understanding Workflows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sequential-workflows-sequenceagent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sequential Workflows (@SequenceAgent)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallel-workflows-parallelagent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parallel Workflows (@ParallelAgent)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditional-workflows-conditionalagent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conditional Workflows (@ConditionalAgent)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#loop-workflows-loopagent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Loop Workflows (@LoopAgent)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#composing-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Composing Workflows
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-are-we-going-to-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Are We Going to Build?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-the-carconditionfeedbackagent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create the CarConditionFeedbackAgent
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Create the CarConditionFeedbackAgent">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#systemmessage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @SystemMessage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usermessage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @UserMessage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agent-with-outputkey" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @Agent with outputKey
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-the-carconditions-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create the CarConditions Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#update-the-cleaningagent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update the CleaningAgent
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-the-workflow-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create the Workflow Directory
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#define-the-carprocessingworkflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Define the CarProcessingWorkflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Define the CarProcessingWorkflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sequenceagent-annotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @SequenceAgent Annotation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-signature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method Signature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @Output
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#update-the-carmanagementservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update the CarManagementService
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Update the CarManagementService">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-injection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1: Injection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-workflow-invocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2: Workflow Invocation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-using-the-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3: Using the Results
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#try-it-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Try It Out
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Try It Out">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#notice-the-new-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notice the New UI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-the-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test the Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-the-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check the Logs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-data-flows-through-the-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How Data Flows Through the Workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How Data Flows Through the Workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-fire-in-the-trunk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: &ldquo;Fire in the trunk&rdquo;
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-the-declarative-workflow-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understanding the Declarative Workflow API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-takeaways" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Takeaways
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#experiment-further" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experiment Further
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Experiment Further">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-inspect-the-agenticscope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Inspect the AgenticScope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-add-more-input-to-the-condition-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Add More Input to the Condition Agent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-try-different-feedback-combinations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Try Different Feedback Combinations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-parallel-vs-sequential" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understanding Parallel vs. Sequential
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What&rsquo;s Next?
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../step-03/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 3 - Composing multiple agentic workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../step-04/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 4 - Supervisor pattern for dynamic orchestration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../step-05/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 5 - Human-in-the-Loop pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../step-06/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 6 - Multimodal agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../step-07/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 7 - Using remote agents (A2A)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../conclusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mastering Agentic Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../conclusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conclusion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#agentic-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agentic Workflows
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-requirement-track-car-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Requirement: Track Car Conditions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-youll-learn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What You&rsquo;ll Learn
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understanding Workflows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Understanding Workflows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sequential-workflows-sequenceagent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sequential Workflows (@SequenceAgent)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallel-workflows-parallelagent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parallel Workflows (@ParallelAgent)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditional-workflows-conditionalagent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conditional Workflows (@ConditionalAgent)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#loop-workflows-loopagent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Loop Workflows (@LoopAgent)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#composing-workflows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Composing Workflows
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-are-we-going-to-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Are We Going to Build?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-the-carconditionfeedbackagent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create the CarConditionFeedbackAgent
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Create the CarConditionFeedbackAgent">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#systemmessage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @SystemMessage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usermessage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @UserMessage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agent-with-outputkey" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @Agent with outputKey
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-the-carconditions-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create the CarConditions Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#update-the-cleaningagent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update the CleaningAgent
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-the-workflow-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create the Workflow Directory
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#define-the-carprocessingworkflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Define the CarProcessingWorkflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Define the CarProcessingWorkflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sequenceagent-annotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @SequenceAgent Annotation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-signature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method Signature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        @Output
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#update-the-carmanagementservice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update the CarManagementService
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Update the CarManagementService">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-injection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1: Injection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-workflow-invocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2: Workflow Invocation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-using-the-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3: Using the Results
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#try-it-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Try It Out
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Try It Out">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#notice-the-new-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notice the New UI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-the-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test the Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-the-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check the Logs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-data-flows-through-the-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How Data Flows Through the Workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How Data Flows Through the Workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-fire-in-the-trunk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: &ldquo;Fire in the trunk&rdquo;
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-the-declarative-workflow-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understanding the Declarative Workflow API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-takeaways" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Takeaways
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#experiment-further" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experiment Further
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Experiment Further">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-inspect-the-agenticscope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Inspect the AgenticScope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-add-more-input-to-the-condition-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Add More Input to the Condition Agent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-try-different-feedback-combinations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Try Different Feedback Combinations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-parallel-vs-sequential" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understanding Parallel vs. Sequential
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What&rsquo;s Next?
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<div><h1 id="step-02-composing-simple-agentic-workflows">Step 02 - Composing Simple Agentic Workflows<a class="headerlink" href="#step-02-composing-simple-agentic-workflows" title="Permanent link"></a></h1>
+<h2 id="agentic-workflows">Agentic Workflows<a class="headerlink" href="#agentic-workflows" title="Permanent link"></a></h2>
+<p>In the previous step, you created an agent that could autonomously determine whether a returned car needed a cleaning or not.
+In the end, implementing this agent was not much different from creating a single AI service like we did in the <a href="../../section-1/step-01/" target="_blank">previous section</a>.
+It did, however, set us up for building a more advanced agentic system, which is what we’re going to start building now.
+In this step, we’re going to take a look at how we can orchestrate multiple agents using an <strong>Agentic Workflow</strong>.</p>
+<h2 id="new-requirement-track-car-conditions">New Requirement: Track Car Conditions<a class="headerlink" href="#new-requirement-track-car-conditions" title="Permanent link"></a></h2>
+<p>The Miles of Smiles management team now wants to keep track of the condition of each car in their fleet.</p>
+<p>Currently, when cars are returned (either from rentals or from the cleaning), feedback is provided but not systematically recorded.
+This leads to inconsistent records and makes it difficult to track the overall condition of the fleet.
+Management wants the system to:</p>
+<ol>
+<li><strong>Automatically analyze feedback</strong> from <strong>both</strong> rental and cleaning returns</li>
+<li><strong>Update the car’s condition</strong> based on this feedback</li>
+<li><strong>Display the current condition</strong> in the fleet management UI</li>
+</ol>
+<p>In this step, you’ll learn how to compose <strong>multiple agents into workflows</strong> that work together to solve more complex problems.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>“Workflow” is a pattern to compose agents with limited autonomy as you defined the control flow (when each agent is called).
+This is different from the supervisor pattern where a special agent determines when to call <em>sub-agents</em>.</p>
+</div>
+<hr>
+<h2 id="what-youll-learn">What You’ll Learn<a class="headerlink" href="#what-youll-learn" title="Permanent link"></a></h2>
+<p>In this step, you will:</p>
+<ul>
+<li>Understand the different types of <strong>agentic workflows</strong> (<a href="https://docs.langchain4j.dev/tutorials/agents#sequential-workflow" target="_blank">sequential</a>, <a href="https://docs.langchain4j.dev/tutorials/agents#parallel-workflow" target="_blank">parallel</a>, <a href="https://docs.langchain4j.dev/tutorials/agents#loop-workflow" target="_blank">loop</a>, and <a href="https://docs.langchain4j.dev/tutorials/agents#conditional-workflow" target="_blank">conditional</a>)</li>
+<li>Build a <strong>sequential workflow</strong> that runs agents one after another</li>
+<li>Learn about <a href="https://docs.langchain4j.dev/tutorials/agents#introducing-the-agenticscope" target="_blank"><strong>AgenticScope</strong></a>, the shared context that enables agents to pass data between each other</li>
+<li>Use the <a href="https://docs.langchain4j.dev/tutorials/agents#declarative-api" target="_blank"><strong>declarative workflow API</strong></a> to build workflows</li>
+<li>See how to extract and use results from multi-agent workflows</li>
+</ul>
+<hr>
+<h2 id="understanding-workflows">Understanding Workflows<a class="headerlink" href="#understanding-workflows" title="Permanent link"></a></h2>
+<p>With Quarkus LangChain4j, you can compose multiple agents to work together as a <em>team</em>.
+Much like the building blocks of a programming language, <code>quarkus-langchain4j-agentic</code> provides a few basic patterns to build different types of workflows.</p>
+<p>LangChain4j provides 4 fundamental workflow patterns that can be combined to create sophisticated agentic systems:</p>
+<h3 id="sequential-workflows-sequenceagent">Sequential Workflows (<code>@SequenceAgent</code>)<a class="headerlink" href="#sequential-workflows-sequenceagent" title="Permanent link"></a></h3>
+<p>With sequential workflows, agents execute <strong>one after another</strong> in a defined order.
+(This is why it’s also called “Prompt Chaining”)</p>
+<div class="panzoom-box" data-key="alt" id="panzoom0" oncontextmenu="return false;">
+    
+    <nav class="panzoom-nav">
+    <button class="panzoom-info panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm169.8-90.7c7.9-22.3 29.1-37.3 52.8-37.3l58.3 0c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24l0-13.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1l-58.3 0c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"></path>
+    </svg>
+</button><button class="panzoom-reset panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M125.7 160l50.3 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L48 224c-17.7 0-32-14.3-32-32L16 64c0-17.7 14.3-32 32-32s32 14.3 32 32l0 51.2L97.6 97.6c87.5-87.5 229.3-87.5 316.8 0s87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3s-163.8-62.5-226.3 0L125.7 160z"></path>
+    </svg>
+</button><button class="panzoom-max panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"></path>
+    </svg>
+</button><button class="panzoom-min panzoom-button panzoom-hidden">
+    <svg class="panzoom-icon" viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M160 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96zM32 320c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM352 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 320c-17.7 0-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0z"></path>
+    </svg>
+</button>
+    </nav>
+    <pre class="mermaid"><code>graph LR
+    A[Agent 1] --&gt; B[Agent 2] --&gt; C[Agent 3]
+    style A fill:#90EE90
+    style B fill:#90EE90
+    style C fill:#90EE90</code></pre> 
+    <div class="panzoom-info-box panzoom-info-box-bottom panzoom-hidden">
+Hold "Alt" / "Option" to enable pan &amp; zoom
+</div>
+</div>
+<p><strong>When to use:</strong> Each agent needs the output from the previous agent.</p>
+<p><strong>Example:</strong> Process feedback → Update condition → Send notification</p>
+<hr>
+<h3 id="parallel-workflows-parallelagent">Parallel Workflows (<code>@ParallelAgent</code>)<a class="headerlink" href="#parallel-workflows-parallelagent" title="Permanent link"></a></h3>
+<p>Parallel workflows allow agents to be executed <strong>simultaneously</strong> on separate threads.</p>
+<div class="panzoom-box" data-key="alt" id="panzoom0" oncontextmenu="return false;">
+    
+    <nav class="panzoom-nav">
+    <button class="panzoom-info panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm169.8-90.7c7.9-22.3 29.1-37.3 52.8-37.3l58.3 0c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24l0-13.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1l-58.3 0c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"></path>
+    </svg>
+</button><button class="panzoom-reset panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M125.7 160l50.3 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L48 224c-17.7 0-32-14.3-32-32L16 64c0-17.7 14.3-32 32-32s32 14.3 32 32l0 51.2L97.6 97.6c87.5-87.5 229.3-87.5 316.8 0s87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3s-163.8-62.5-226.3 0L125.7 160z"></path>
+    </svg>
+</button><button class="panzoom-max panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"></path>
+    </svg>
+</button><button class="panzoom-min panzoom-button panzoom-hidden">
+    <svg class="panzoom-icon" viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M160 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96zM32 320c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM352 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 320c-17.7 0-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0z"></path>
+    </svg>
+</button>
+    </nav>
+    <pre class="mermaid"><code>graph TD
+    Start[Start] --&gt; A[Agent 1]
+    Start --&gt; B[Agent 2]
+    Start --&gt; C[Agent 3]
+    A --&gt; End[Continue]
+    B --&gt; End
+    C --&gt; End
+    style A fill:#87CEEB
+    style B fill:#87CEEB
+    style C fill:#87CEEB</code></pre> 
+    <div class="panzoom-info-box panzoom-info-box-bottom panzoom-hidden">
+Hold "Alt" / "Option" to enable pan &amp; zoom
+</div>
+</div>
+<p><strong>When to use:</strong> When agents can work independently and you want faster execution, and/or you want to aggregate the results of both.</p>
+<p><strong>Example:</strong> Analyze for cleaning needs AND maintenance needs at the same time</p>
+<p><strong>Performance benefit:</strong> If each agent takes 2 seconds, sequential = 4 seconds total, parallel = ~2 seconds total!</p>
+<hr>
+<h3 id="conditional-workflows-conditionalagent">Conditional Workflows (<code>@ConditionalAgent</code>)<a class="headerlink" href="#conditional-workflows-conditionalagent" title="Permanent link"></a></h3>
+<p>Conditional Workflows will execute agents <strong>only if their activation condition is met</strong>.</p>
+<div class="panzoom-box" data-key="alt" id="panzoom0" oncontextmenu="return false;">
+    
+    <nav class="panzoom-nav">
+    <button class="panzoom-info panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm169.8-90.7c7.9-22.3 29.1-37.3 52.8-37.3l58.3 0c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24l0-13.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1l-58.3 0c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"></path>
+    </svg>
+</button><button class="panzoom-reset panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M125.7 160l50.3 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L48 224c-17.7 0-32-14.3-32-32L16 64c0-17.7 14.3-32 32-32s32 14.3 32 32l0 51.2L97.6 97.6c87.5-87.5 229.3-87.5 316.8 0s87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3s-163.8-62.5-226.3 0L125.7 160z"></path>
+    </svg>
+</button><button class="panzoom-max panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"></path>
+    </svg>
+</button><button class="panzoom-min panzoom-button panzoom-hidden">
+    <svg class="panzoom-icon" viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M160 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96zM32 320c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM352 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 320c-17.7 0-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0z"></path>
+    </svg>
+</button>
+    </nav>
+    <pre class="mermaid"><code>graph TD
+    Start[Start] --&gt; Check1{Condition 1?}
+    Check1 --&gt;|Yes| A[Agent 1]
+    Check1 --&gt;|No| Check2{Condition 2?}
+    A --&gt; End[Continue]
+    Check2 --&gt;|Yes| B[Agent 2]
+    Check2 --&gt;|No| End
+    B --&gt; End
+    style A fill:#FFD700
+    style B fill:#FFD700</code></pre> 
+    <div class="panzoom-info-box panzoom-info-box-bottom panzoom-hidden">
+Hold "Alt" / "Option" to enable pan &amp; zoom
+</div>
+</div>
+<p><strong>When to use:</strong> When different execution paths are needed based on runtime data (e.g. the output of a previous agent execution).</p>
+<p><strong>Example:</strong> If maintenance needed → send to maintenance, else if cleaning needed → send to cleaning</p>
+<hr>
+<h3 id="loop-workflows-loopagent">Loop Workflows (<code>@LoopAgent</code>)<a class="headerlink" href="#loop-workflows-loopagent" title="Permanent link"></a></h3>
+<p>With Loop workflows, agents run <strong>repeatedly until a condition is met</strong>.</p>
+<div class="panzoom-box" data-key="alt" id="panzoom0" oncontextmenu="return false;">
+    
+    <nav class="panzoom-nav">
+    <button class="panzoom-info panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm169.8-90.7c7.9-22.3 29.1-37.3 52.8-37.3l58.3 0c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24l0-13.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1l-58.3 0c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"></path>
+    </svg>
+</button><button class="panzoom-reset panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M125.7 160l50.3 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L48 224c-17.7 0-32-14.3-32-32L16 64c0-17.7 14.3-32 32-32s32 14.3 32 32l0 51.2L97.6 97.6c87.5-87.5 229.3-87.5 316.8 0s87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3s-163.8-62.5-226.3 0L125.7 160z"></path>
+    </svg>
+</button><button class="panzoom-max panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"></path>
+    </svg>
+</button><button class="panzoom-min panzoom-button panzoom-hidden">
+    <svg class="panzoom-icon" viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M160 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96zM32 320c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM352 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 320c-17.7 0-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0z"></path>
+    </svg>
+</button>
+    </nav>
+    <pre class="mermaid"><code>graph TD
+    Start[Start] --&gt; A[Agent]
+    A --&gt; Check{Continue?}
+    Check --&gt;|Yes| A
+    Check --&gt;|No| End[Done]
+    style A fill:#FFA07A</code></pre> 
+    <div class="panzoom-info-box panzoom-info-box-bottom panzoom-hidden">
+Hold "Alt" / "Option" to enable pan &amp; zoom
+</div>
+</div>
+<p><strong>When to use:</strong> When iterative refinement or retries are needed.</p>
+<p><strong>Example:</strong> Keep refining a report until quality threshold is met (with e.g. a max of 5 attempts)</p>
+<hr>
+<h3 id="composing-workflows">Composing Workflows<a class="headerlink" href="#composing-workflows" title="Permanent link"></a></h3>
+<p>These basic workflows can be <strong>nested within workflows</strong> to create more advanced logic.
+You can use probabilistic AI when it makes sense, and create deterministic workflows to control the flow.</p>
+<div class="admonition note">
+<p class="admonition-title">Autonomous and Goal Oriented Agentic AI Patterns</p>
+<p>LangChain4j also provides additional building blocks to create more advanced and custom goal-oriented agentic AI patterns, such as the <a href="https://docs.langchain4j.dev/tutorials/agents#supervisor-design-and-customization" target="_blank">supervisor pattern</a>, <a href="https://docs.langchain4j.dev/tutorials/agents#goal-oriented-agentic-pattern" target="_blank">goal-oriented pattern</a>, <a href="https://docs.langchain4j.dev/tutorials/agents#peer-to-peer-agentic-pattern" target="_blank">peer-to-peer</a>, <a href="https://docs.langchain4j.dev/tutorials/agents#human-in-the-loop" target="_blank">human in the loop</a>, etc.</p>
+<p>We will visit these further along in this workshop. For now, let’s focus on the basics.</p>
+</div>
+<p>In this step, we’ll use a <strong>sequential workflow</strong> to:</p>
+<ol>
+<li>First, run the <code>CleaningAgent</code> to determine if cleaning is needed</li>
+<li>Then, run the <code>CarConditionFeedbackAgent</code> to update the car’s condition</li>
+</ol>
+<hr>
+<h2 id="what-are-we-going-to-build">What Are We Going to Build?<a class="headerlink" href="#what-are-we-going-to-build" title="Permanent link"></a></h2>
+<p><img alt="App Blueprint" class="center" src="../../images/agentic-app-2.png"></p>
+<p>We’ll enhance the car management system with:</p>
+<ol>
+<li><strong>CarConditionFeedbackAgent</strong>: Analyzes feedback to determine the current condition of a car</li>
+<li><strong>CarProcessingWorkflow</strong>: A sequential workflow that orchestrates the cleaning agent and condition feedback agent</li>
+<li><strong>Updated UI</strong>: Displays the current condition of each car</li>
+</ol>
+<p><strong>The Flow:</strong></p>
+<div class="panzoom-box" data-key="alt" id="panzoom0" oncontextmenu="return false;">
+    
+    <nav class="panzoom-nav">
+    <button class="panzoom-info panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm169.8-90.7c7.9-22.3 29.1-37.3 52.8-37.3l58.3 0c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24l0-13.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1l-58.3 0c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"></path>
+    </svg>
+</button><button class="panzoom-reset panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M125.7 160l50.3 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L48 224c-17.7 0-32-14.3-32-32L16 64c0-17.7 14.3-32 32-32s32 14.3 32 32l0 51.2L97.6 97.6c87.5-87.5 229.3-87.5 316.8 0s87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3s-163.8-62.5-226.3 0L125.7 160z"></path>
+    </svg>
+</button><button class="panzoom-max panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"></path>
+    </svg>
+</button><button class="panzoom-min panzoom-button panzoom-hidden">
+    <svg class="panzoom-icon" viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M160 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96zM32 320c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM352 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 320c-17.7 0-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0z"></path>
+    </svg>
+</button>
+    </nav>
+    <pre class="mermaid"><code>sequenceDiagram
+    participant User
+    participant Workflow as CarProcessingWorkflow
+    participant Agent1 as CleaningAgent
+    participant Agent2 as CarConditionFeedbackAgent
+    participant Scope as AgenticScope
+
+    User-&gt;&gt;Workflow: processCarReturn(carInfo, feedback)
+    Workflow-&gt;&gt;Scope: Store inputs (carMake, feedback, etc.)
+    Workflow-&gt;&gt;Agent1: Execute
+    Agent1-&gt;&gt;Scope: Read inputs
+    Agent1-&gt;&gt;Scope: Write output (cleaningAgentResult)
+    Workflow-&gt;&gt;Agent2: Execute
+    Agent2-&gt;&gt;Scope: Read inputs (including cleaningAgentResult)
+    Agent2-&gt;&gt;Scope: Write output (carCondition)
+    Workflow-&gt;&gt;Scope: Extract results
+    Workflow-&gt;&gt;User: Return CarConditions</code></pre> 
+    <div class="panzoom-info-box panzoom-info-box-bottom panzoom-hidden">
+Hold "Alt" / "Option" to enable pan &amp; zoom
+</div>
+</div>
+<hr>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link"></a></h2>
+<p>Before starting:</p>
+<ul>
+<li>Completed <a href="../step-01/" target="_blank">Step 01</a> (or have the <code>section-2/step-01</code> code available)</li>
+<li>Application from Step 01 is stopped (Ctrl+C)</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1">Option 1: Continue from Step 01</label><label for="__tabbed_1_2">Option 2: Start Fresh from Step 02</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>If you want to continue building on your Step 01 code, you’ll need to copy some updated UI files and the updated <code>CarInfo.java</code> from <code>step-02</code>:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked id="__tabbed_2_1" name="__tabbed_2" type="radio"><input id="__tabbed_2_2" name="__tabbed_2" type="radio"><div class="tabbed-labels"><label for="__tabbed_2_1">Linux / macOS</label><label for="__tabbed_2_2">Windows</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>section-2/step-01
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cp<span class="w"> </span>../step-02/src/main/resources/META-INF/resources/css/styles.css<span class="w"> </span>./src/main/resources/META-INF/resources/css/styles.css
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>cp<span class="w"> </span>../step-02/src/main/resources/META-INF/resources/js/app.js<span class="w"> </span>./src/main/resources/META-INF/resources/js/app.js
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>cp<span class="w"> </span>../step-02/src/main/resources/META-INF/resources/index.html<span class="w"> </span>./src/main/resources/META-INF/resources/index.html
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>cp<span class="w"> </span>../step-02/src/main/resources/import.sql<span class="w"> </span>./src/main/resources/import.sql
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>cp<span class="w"> </span>../step-02/src/main/java/com/carmanagement/model/CarInfo.java<span class="w"> </span>./src/main/java/com/carmanagement/model/CarInfo.java
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cd section-2\step-01
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>copy ..\step-02\src\main\resources\META-INF\resources\css\styles.css .\src\main\resources\META-INF\resources\css\styles.css
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>copy ..\step-02\src\main\resources\META-INF\resources\js\app.js .\src\main\resources\META-INF\resources\js\app.js
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>copy ..\step-02\src\main\resources\META-INF\resources\index.html .\src\main\resources\META-INF\resources\index.html
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>copy ..\step-02\src\main\resources\import.sql .\src\main\resources\import.sql
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>copy ..\step-02\src\main\java\com\carmanagement\model\CarInfo.java .\src\main\java\com\carmanagement\model\CarInfo.java
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>These files add the “Condition” column to the UI and update the data model to track car conditions.</p>
+</div>
+<div class="tabbed-block">
+<p>Alternatively, navigate to the complete <code>section-2/step-02</code> directory:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>section-2/step-02
+</code></pre></div>
+</div>
+</div>
+</div>
+<hr>
+<h2 id="create-the-carconditionfeedbackagent">Create the CarConditionFeedbackAgent<a class="headerlink" href="#create-the-carconditionfeedbackagent" title="Permanent link"></a></h2>
+<p>Create a new agent that analyzes feedback to determine a car’s current condition.</p>
+<p>In <code>src/main/java/com/carmanagement/agentic/agents</code>, create <code>CarConditionFeedbackAgent.java</code>:</p>
+<div class="highlight"><span class="filename">CarConditionFeedbackAgent.java</span><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">package</span><span class="w"> </span><span class="nn">com.carmanagement.agentic.agents</span><span class="p">;</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dev.langchain4j.agentic.Agent</span><span class="p">;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dev.langchain4j.service.SystemMessage</span><span class="p">;</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dev.langchain4j.service.UserMessage</span><span class="p">;</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="cm">/**</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="cm"> * Agent that analyzes feedback to update the car condition.</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="cm"> */</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">CarConditionFeedbackAgent</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="nd">@SystemMessage</span><span class="p">(</span><span class="s">"""</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="s">        You are a car condition analyzer for a car rental company. Your job is to determine the current condition of a car based on feedback.</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="s">        Analyze all feedback and the previous car condition to provide an updated condition description.</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="s">        Always provide a concise condition description, even if there's minimal feedback.</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="s">        Do not add any headers or prefixes to your response.</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="s">        """</span><span class="p">)</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span><span class="nd">@UserMessage</span><span class="p">(</span><span class="s">"""</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="s">            Car Information:</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="s">            Make: {carMake}</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="s">            Model: {carModel}</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="s">            Year: {carYear}</span>
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="s">            Previous Condition: {carCondition}</span>
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>
+<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="s">            Rental Feedback: {rentalFeedback}</span>
+<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="s">            Cleaning Feedback: {cleaningFeedback}</span>
+<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="s">            """</span><span class="p">)</span>
+<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="w">    </span><span class="nd">@Agent</span><span class="p">(</span><span class="n">outputKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"carCondition"</span><span class="p">,</span>
+<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="w">            </span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Car condition analyzer. Determines the current condition of a car based on feedback."</span><span class="p">)</span>
+<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="nf">analyzeForCondition</span><span class="p">(</span>
+<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">carMake</span><span class="p">,</span>
+<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">carModel</span><span class="p">,</span>
+<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a><span class="w">            </span><span class="n">Integer</span><span class="w"> </span><span class="n">carYear</span><span class="p">,</span>
+<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a><span class="w">            </span><span class="n">Integer</span><span class="w"> </span><span class="n">carNumber</span><span class="p">,</span>
+<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">carCondition</span><span class="p">,</span>
+<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">rentalFeedback</span><span class="p">,</span>
+<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">cleaningFeedback</span><span class="p">);</span>
+<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Let’s break it down:</strong></p>
+<h3 id="systemmessage"><code>@SystemMessage</code><a class="headerlink" href="#systemmessage" title="Permanent link"></a></h3>
+<p>Defines the agent’s role as a <strong>car condition analyzer</strong>:</p>
+<ul>
+<li>Analyzes feedback to determine current condition</li>
+<li>Considers the previous condition when making assessments</li>
+<li>Provides concise condition descriptions</li>
+<li>Does not add headers or prefixes (for clean output)</li>
+</ul>
+<h3 id="usermessage"><code>@UserMessage</code><a class="headerlink" href="#usermessage" title="Permanent link"></a></h3>
+<p>Provides all the context needed:</p>
+<ul>
+<li>Car details: <code>{carMake}</code>, <code>{carModel}</code>, <code>{carYear}</code></li>
+<li><strong>Previous condition</strong>: <code>{carCondition}</code> — allows the agent to understand changes</li>
+<li>Feedback from multiple sources: <code>{rentalFeedback}</code>, <code>{cleaningFeedback}</code></li>
+</ul>
+<h3 id="agent-with-outputkey"><code>@Agent</code> with <code>outputKey</code><a class="headerlink" href="#agent-with-outputkey" title="Permanent link"></a></h3>
+<p>Notice the new <strong><code>outputKey</code> parameter</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nd">@Agent</span><span class="p">(</span><span class="n">outputKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"carCondition"</span><span class="p">,</span><span class="w"> </span><span class="p">...)</span>
+</code></pre></div>
+<p>This tells the framework to store the agent’s result in the <code>AgenticScope</code>’s state under the key <code>"carCondition"</code>.
+Other agents or the workflow can then access this value.</p>
+<div class="admonition note">
+<p class="admonition-title"><strong>Understanding AgenticScope</strong></p>
+<p>To enable agents to work together, they need a way to <strong>share data</strong>.
+This is where <code>AgenticScope</code> comes in.</p>
+<p><strong>What is AgenticScope?</strong></p>
+<ul>
+<li>A <strong>shared context</strong> that keeps track throughout a workflow execution.</li>
+<li>Contains a <strong>map</strong> of key-value pairs that agents can read from and write to: the <em>state</em>.</li>
+<li>This state is automatically populated with <strong>inputs</strong> from the workflow method signature.</li>
+<li>This state is automatically updated with <strong>outputs</strong> from each agent using their <code>outputKey</code>.</li>
+</ul>
+<p><strong>How It Works:</strong></p>
+<div class="panzoom-box" data-key="alt" id="panzoom0" oncontextmenu="return false;">
+    
+    <nav class="panzoom-nav">
+    <button class="panzoom-info panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm169.8-90.7c7.9-22.3 29.1-37.3 52.8-37.3l58.3 0c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24l0-13.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1l-58.3 0c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"></path>
+    </svg>
+</button><button class="panzoom-reset panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M125.7 160l50.3 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L48 224c-17.7 0-32-14.3-32-32L16 64c0-17.7 14.3-32 32-32s32 14.3 32 32l0 51.2L97.6 97.6c87.5-87.5 229.3-87.5 316.8 0s87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3s-163.8-62.5-226.3 0L125.7 160z"></path>
+    </svg>
+</button><button class="panzoom-max panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"></path>
+    </svg>
+</button><button class="panzoom-min panzoom-button panzoom-hidden">
+    <svg class="panzoom-icon" viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M160 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96zM32 320c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM352 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 320c-17.7 0-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0z"></path>
+    </svg>
+</button>
+    </nav>
+    <pre class="mermaid"><code>graph LR
+    A[Workflow Inputs] --&gt;|Populate| B[AgenticScope]
+    B --&gt;|Read state| C[Agent 1]
+    C --&gt;|Write state| B
+    B --&gt;|Read state| D[Agent 2]
+    D --&gt;|Write state| B
+    B --&gt;|Extract| E[Workflow Result]</code></pre> 
+    <div class="panzoom-info-box panzoom-info-box-bottom panzoom-hidden">
+Hold "Alt" / "Option" to enable pan &amp; zoom
+</div>
+</div>
+<p>When an agent completes, its result is stored in the <code>AgenticScope</code>’s state using the <code>outputKey</code> specified in the <code>@Agent</code> annotation.
+The next agent in the workflow can access this value as an input parameter using the name specified in the <code>outputKey</code> annotation.</p>
+</div>
+<hr>
+<h2 id="create-the-carconditions-model">Create the CarConditions Model<a class="headerlink" href="#create-the-carconditions-model" title="Permanent link"></a></h2>
+<p>Before creating the workflow, we need a data model to return both the car condition and whether a cleaning is required.</p>
+<p>In <code>src/main/java/com/carmanagement/model</code>, create <code>CarConditions.java</code>:</p>
+<div class="highlight"><span class="filename">CarConditions.java</span><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">package</span><span class="w"> </span><span class="nn">com.carmanagement.model</span><span class="p">;</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="cm">/**</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="cm"> * Record representing the conditions of a car.</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="cm"> *</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="cm"> * @param generalCondition   A description of the car's general condition</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="cm"> * @param cleaningRequired    Indicates if a cleaning is required</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="cm"> */</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="kd">public</span><span class="w"> </span><span class="kd">record</span> <span class="nc">CarConditions</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">generalCondition</span><span class="p">,</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="n">cleaningRequired</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="p">}</span>
+</code></pre></div>
+<p>This simple record combines the results from both agents in our workflow.</p>
+<hr>
+<h2 id="update-the-cleaningagent">Update the CleaningAgent<a class="headerlink" href="#update-the-cleaningagent" title="Permanent link"></a></h2>
+<p>The <code>CleaningAgent</code> needs to specify an <code>outputKey</code> so its result can be accessed by the workflow.</p>
+<p>Update <code>src/main/java/com/carmanagement/agentic/agents/CleaningAgent.java</code>:</p>
+<div class="highlight"><span class="filename">CleaningAgent.java</span><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">package</span><span class="w"> </span><span class="nn">com.carmanagement.agentic.agents</span><span class="p">;</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">io.quarkiverse.langchain4j.ToolBox</span><span class="p">;</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">com.carmanagement.agentic.tools.CleaningTool</span><span class="p">;</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dev.langchain4j.agentic.Agent</span><span class="p">;</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dev.langchain4j.service.SystemMessage</span><span class="p">;</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dev.langchain4j.service.UserMessage</span><span class="p">;</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="cm">/**</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="cm"> * Agent that determines what cleaning services to request.</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="cm"> */</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">CleaningAgent</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">    </span><span class="nd">@SystemMessage</span><span class="p">(</span><span class="s">"""</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="s">        You handle intake for the cleaning department of a car rental company.</span>
+<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="s">        """</span><span class="p">)</span>
+<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">    </span><span class="nd">@UserMessage</span><span class="p">(</span><span class="s">"""</span>
+<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="s">        Taking into account all provided feedback, determine if the car needs a cleaning.</span>
+<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="s">        If the feedback indicates the car is dirty, has stains, or any other cleanliness issues,</span>
+<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="s">        call the provided tool and recommend appropriate cleaning services (exterior wash, interior cleaning, waxing, detailing).</span>
+<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="s">        Be specific about what services are needed.</span>
+<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a><span class="s">        If no cleaning is needed based on the feedback, respond with "CLEANING_NOT_REQUIRED".</span>
+<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>
+<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a><span class="s">        Car Information:</span>
+<a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a><span class="s">        Make: {carMake}</span>
+<a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a><span class="s">        Model: {carModel}</span>
+<a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a><span class="s">        Year: {carYear}</span>
+<a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a><span class="s">        Car Number: {carNumber}</span>
+<a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a>
+<a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a><span class="s">        Feedback:</span>
+<a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a><span class="s">        Rental Feedback: {rentalFeedback}</span>
+<a id="__codelineno-6-33" name="__codelineno-6-33" href="#__codelineno-6-33"></a><span class="s">        Cleaning Feedback: {cleaningFeedback}</span>
+<a id="__codelineno-6-34" name="__codelineno-6-34" href="#__codelineno-6-34"></a><span class="s">        """</span><span class="p">)</span>
+<a id="__codelineno-6-35" name="__codelineno-6-35" href="#__codelineno-6-35"></a><span class="hll"><span class="w">    </span><span class="nd">@Agent</span><span class="p">(</span><span class="n">outputKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"cleaningAgentResult"</span><span class="p">,</span>
+</span><a id="__codelineno-6-36" name="__codelineno-6-36" href="#__codelineno-6-36"></a><span class="w">            </span><span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Cleaning specialist. Determines what cleaning services are needed."</span><span class="p">)</span>
+<a id="__codelineno-6-37" name="__codelineno-6-37" href="#__codelineno-6-37"></a><span class="w">    </span><span class="nd">@ToolBox</span><span class="p">(</span><span class="n">CleaningTool</span><span class="p">.</span><span class="na">class</span><span class="p">)</span>
+<a id="__codelineno-6-38" name="__codelineno-6-38" href="#__codelineno-6-38"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="nf">processCleaning</span><span class="p">(</span>
+<a id="__codelineno-6-39" name="__codelineno-6-39" href="#__codelineno-6-39"></a><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">carMake</span><span class="p">,</span>
+<a id="__codelineno-6-40" name="__codelineno-6-40" href="#__codelineno-6-40"></a><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">carModel</span><span class="p">,</span>
+<a id="__codelineno-6-41" name="__codelineno-6-41" href="#__codelineno-6-41"></a><span class="w">            </span><span class="n">Integer</span><span class="w"> </span><span class="n">carYear</span><span class="p">,</span>
+<a id="__codelineno-6-42" name="__codelineno-6-42" href="#__codelineno-6-42"></a><span class="w">            </span><span class="n">Integer</span><span class="w"> </span><span class="n">carNumber</span><span class="p">,</span>
+<a id="__codelineno-6-43" name="__codelineno-6-43" href="#__codelineno-6-43"></a><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">rentalFeedback</span><span class="p">,</span>
+<a id="__codelineno-6-44" name="__codelineno-6-44" href="#__codelineno-6-44"></a><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">cleaningFeedback</span><span class="p">);</span>
+<a id="__codelineno-6-45" name="__codelineno-6-45" href="#__codelineno-6-45"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Key change:</strong></p>
+<p>The <code>@Agent</code> annotation adds <code>outputKey = "cleaningAgentResult"</code>. This stores the agent’s response in the <code>AgenticScope</code>’s state, making it available to subsequent agents and the workflow output method.</p>
+<hr>
+<h2 id="create-the-workflow-directory">Create the Workflow Directory<a class="headerlink" href="#create-the-workflow-directory" title="Permanent link"></a></h2>
+<p>If continuing from Step 01, create the workflow directory:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked id="__tabbed_3_1" name="__tabbed_3" type="radio"><input id="__tabbed_3_2" name="__tabbed_3" type="radio"><div class="tabbed-labels"><label for="__tabbed_3_1">Linux / macOS</label><label for="__tabbed_3_2">Windows</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>./src/main/java/com/carmanagement/agentic/workflow
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>mkdir .\src\main\java\com\carmanagement\agentic\workflow
+</code></pre></div>
+</div>
+</div>
+</div>
+<hr>
+<h2 id="define-the-carprocessingworkflow">Define the CarProcessingWorkflow<a class="headerlink" href="#define-the-carprocessingworkflow" title="Permanent link"></a></h2>
+<p>Now, create the workflow that orchestrates both agents.</p>
+<p>In <code>src/main/java/com/carmanagement/agentic/workflow</code>, create <code>CarProcessingWorkflow.java</code>:</p>
+<div class="highlight"><span class="filename">CarProcessingWorkflow.java</span><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">package</span><span class="w"> </span><span class="nn">com.carmanagement.agentic.workflow</span><span class="p">;</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">com.carmanagement.agentic.agents.CarConditionFeedbackAgent</span><span class="p">;</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">com.carmanagement.agentic.agents.CleaningAgent</span><span class="p">;</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">com.carmanagement.model.CarConditions</span><span class="p">;</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dev.langchain4j.agentic.declarative.Output</span><span class="p">;</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="kn">import</span><span class="w"> </span><span class="nn">dev.langchain4j.agentic.declarative.SequenceAgent</span><span class="p">;</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="cm">/**</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="cm"> * Workflow for processing car returns using a sequence of agents.</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="cm"> */</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">CarProcessingWorkflow</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="w">    </span><span class="cm">/**</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="cm">     * Processes a car return by running feedback analysis and then appropriate actions.</span>
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="cm">     */</span>
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a><span class="hll"><span class="w">    </span><span class="nd">@SequenceAgent</span><span class="p">(</span>
+</span><a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a><span class="hll"><span class="w">            </span><span class="n">outputKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"carConditions"</span><span class="p">,</span>
+</span><a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a><span class="hll"><span class="w">            </span><span class="n">subAgents</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CleaningAgent</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="n">CarConditionFeedbackAgent</span><span class="p">.</span><span class="na">class</span><span class="w"> </span><span class="p">})</span>
+</span><a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="w">    </span><span class="n">CarConditions</span><span class="w"> </span><span class="nf">processCarReturn</span><span class="p">(</span>
+<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">carMake</span><span class="p">,</span>
+<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">carModel</span><span class="p">,</span>
+<a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a><span class="w">            </span><span class="n">Integer</span><span class="w"> </span><span class="n">carYear</span><span class="p">,</span>
+<a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a><span class="w">            </span><span class="n">Integer</span><span class="w"> </span><span class="n">carNumber</span><span class="p">,</span>
+<a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">carCondition</span><span class="p">,</span>
+<a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">rentalFeedback</span><span class="p">,</span>
+<a id="__codelineno-9-27" name="__codelineno-9-27" href="#__codelineno-9-27"></a><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">cleaningFeedback</span><span class="p">);</span>
+<a id="__codelineno-9-28" name="__codelineno-9-28" href="#__codelineno-9-28"></a>
+<a id="__codelineno-9-29" name="__codelineno-9-29" href="#__codelineno-9-29"></a><span class="w">    </span><span class="nd">@Output</span>
+<a id="__codelineno-9-30" name="__codelineno-9-30" href="#__codelineno-9-30"></a><span class="w">    </span><span class="kd">static</span><span class="w"> </span><span class="n">CarConditions</span><span class="w"> </span><span class="nf">output</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">carCondition</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">cleaningAgentResult</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-31" name="__codelineno-9-31" href="#__codelineno-9-31"></a><span class="w">        </span><span class="kt">boolean</span><span class="w"> </span><span class="n">cleaningRequired</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">cleaningAgentResult</span><span class="p">.</span><span class="na">toUpperCase</span><span class="p">().</span><span class="na">contains</span><span class="p">(</span><span class="s">"NOT_REQUIRED"</span><span class="p">);</span>
+<a id="__codelineno-9-32" name="__codelineno-9-32" href="#__codelineno-9-32"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CarConditions</span><span class="p">(</span><span class="n">carCondition</span><span class="p">,</span><span class="w"> </span><span class="n">cleaningRequired</span><span class="p">);</span>
+<a id="__codelineno-9-33" name="__codelineno-9-33" href="#__codelineno-9-33"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-9-34" name="__codelineno-9-34" href="#__codelineno-9-34"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Let’s break it down:</strong></p>
+<h3 id="sequenceagent-annotation"><code>@SequenceAgent</code> Annotation<a class="headerlink" href="#sequenceagent-annotation" title="Permanent link"></a></h3>
+<p>This annotation defines a <strong>sequential workflow</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="w">    </span><span class="nd">@SequenceAgent</span><span class="p">(</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">            </span><span class="n">outputKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"carConditions"</span><span class="p">,</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">            </span><span class="n">subAgents</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CleaningAgent</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="n">CarConditionFeedbackAgent</span><span class="p">.</span><span class="na">class</span><span class="w"> </span><span class="p">})</span>
+</code></pre></div>
+<ul>
+<li><strong><code>outputKey</code></strong>: Where to store the final workflow result in <code>AgenticScope</code>’s state</li>
+<li><strong><code>subAgents</code></strong>: The list of agents to execute in order</li>
+<li>Agent 1: <code>CleaningAgent</code>: determines if cleaning is needed</li>
+<li>Agent 2: <code>CarConditionFeedbackAgent</code>: updates the car condition</li>
+</ul>
+<p>The agents execute sequentially: <code>CleaningAgent</code> → <code>CarConditionFeedbackAgent</code></p>
+<h3 id="method-signature">Method Signature<a class="headerlink" href="#method-signature" title="Permanent link"></a></h3>
+<p>The workflow method signature defines <strong>all the inputs</strong> needed by any agent in the workflow:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">CarConditions</span><span class="w"> </span><span class="nf">processCarReturn</span><span class="p">(</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">carMake</span><span class="p">,</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">carModel</span><span class="p">,</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span><span class="n">Integer</span><span class="w"> </span><span class="n">carYear</span><span class="p">,</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">    </span><span class="n">Integer</span><span class="w"> </span><span class="n">carNumber</span><span class="p">,</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">carCondition</span><span class="p">,</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">rentalFeedback</span><span class="p">,</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">cleaningFeedback</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="p">)</span>
+</code></pre></div>
+<p>These parameters are automatically populated into the <code>AgenticScope</code> when the workflow is invoked.</p>
+<h3 id="output"><code>@Output</code><a class="headerlink" href="#output" title="Permanent link"></a></h3>
+<p>The output method defines <strong>how to extract the final result</strong> from the <code>AgenticScope</code>’s state:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nd">@Output</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="kd">static</span><span class="w"> </span><span class="n">CarConditions</span><span class="w"> </span><span class="nf">output</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">carCondition</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">cleaningAgentResult</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">    </span><span class="kt">boolean</span><span class="w"> </span><span class="n">cleaningRequired</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">cleaningAgentResult</span><span class="p">.</span><span class="na">toUpperCase</span><span class="p">().</span><span class="na">contains</span><span class="p">(</span><span class="s">"NOT_REQUIRED"</span><span class="p">);</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CarConditions</span><span class="p">(</span><span class="n">carCondition</span><span class="p">,</span><span class="w"> </span><span class="n">cleaningRequired</span><span class="p">);</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>How it works:</strong></p>
+<ol>
+<li>The method parameters (<code>carCondition</code>, <code>cleaningAgentResult</code>) are automatically extracted from the <code>AgenticScope</code> by matching their names with the <code>outputKey</code> values from the agents</li>
+<li>The method processes these values (in this case, checking if a cleaning is required)</li>
+<li>Returns a <code>CarConditions</code> object combining both results</li>
+</ol>
+<div class="admonition success">
+<p class="admonition-title">Combining Outputs</p>
+<p>This is more powerful than just returning the last agent’s result: you can combine outputs from multiple agents into a single output!</p>
+</div>
+<hr>
+<h2 id="update-the-carmanagementservice">Update the CarManagementService<a class="headerlink" href="#update-the-carmanagementservice" title="Permanent link"></a></h2>
+<p>Now update the service to use the workflow instead of calling agents directly.</p>
+<p>Update <code>src/main/java/com/carmanagement/service/CarManagementService.java</code>:</p>
+<div class="highlight"><span class="filename">CarManagementService.java</span><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">package</span><span class="w"> </span><span class="nn">com.carmanagement.service</span><span class="p">;</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jakarta.enterprise.context.ApplicationScoped</span><span class="p">;</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jakarta.inject.Inject</span><span class="p">;</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jakarta.transaction.Transactional</span><span class="p">;</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="kn">import</span><span class="w"> </span><span class="nn">com.carmanagement.agentic.workflow.CarProcessingWorkflow</span><span class="p">;</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="kn">import</span><span class="w"> </span><span class="nn">com.carmanagement.model.CarConditions</span><span class="p">;</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="kn">import</span><span class="w"> </span><span class="nn">com.carmanagement.model.CarInfo</span><span class="p">;</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="kn">import</span><span class="w"> </span><span class="nn">com.carmanagement.model.CarStatus</span><span class="p">;</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>
+<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="cm">/**</span>
+<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="cm"> * Service for managing car returns from various operations.</span>
+<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="cm"> */</span>
+<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="nd">@ApplicationScoped</span>
+<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CarManagementService</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="hll"><span class="w">    </span><span class="nd">@Inject</span>
+</span><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a><span class="hll"><span class="w">    </span><span class="n">CarProcessingWorkflow</span><span class="w"> </span><span class="n">carProcessingWorkflow</span><span class="p">;</span>
+</span><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>
+<a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a><span class="w">    </span><span class="cm">/**</span>
+<a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a><span class="cm">     * Process a car return from any operation.</span>
+<a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a><span class="cm">     *</span>
+<a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a><span class="cm">     * @param carNumber The car number</span>
+<a id="__codelineno-13-24" name="__codelineno-13-24" href="#__codelineno-13-24"></a><span class="cm">     * @param rentalFeedback Optional rental feedback</span>
+<a id="__codelineno-13-25" name="__codelineno-13-25" href="#__codelineno-13-25"></a><span class="cm">     * @return Result of the processing</span>
+<a id="__codelineno-13-26" name="__codelineno-13-26" href="#__codelineno-13-26"></a><span class="cm">     */</span>
+<a id="__codelineno-13-27" name="__codelineno-13-27" href="#__codelineno-13-27"></a><span class="w">    </span><span class="nd">@Transactional</span>
+<a id="__codelineno-13-28" name="__codelineno-13-28" href="#__codelineno-13-28"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">processCarReturn</span><span class="p">(</span><span class="n">Integer</span><span class="w"> </span><span class="n">carNumber</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">rentalFeedback</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">cleaningFeedback</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-13-29" name="__codelineno-13-29" href="#__codelineno-13-29"></a><span class="w">        </span><span class="n">CarInfo</span><span class="w"> </span><span class="n">carInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CarInfo</span><span class="p">.</span><span class="na">findById</span><span class="p">(</span><span class="n">carNumber</span><span class="p">);</span>
+<a id="__codelineno-13-30" name="__codelineno-13-30" href="#__codelineno-13-30"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">carInfo</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-13-31" name="__codelineno-13-31" href="#__codelineno-13-31"></a><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="s">"Car not found with number: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">carNumber</span><span class="p">;</span>
+<a id="__codelineno-13-32" name="__codelineno-13-32" href="#__codelineno-13-32"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-13-33" name="__codelineno-13-33" href="#__codelineno-13-33"></a>
+<a id="__codelineno-13-34" name="__codelineno-13-34" href="#__codelineno-13-34"></a><span class="hll"><span class="w">        </span><span class="c1">// Process the car return using the workflow and get the AgenticScope</span>
+</span><a id="__codelineno-13-35" name="__codelineno-13-35" href="#__codelineno-13-35"></a><span class="hll"><span class="w">        </span><span class="n">CarConditions</span><span class="w"> </span><span class="n">carConditions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">carProcessingWorkflow</span><span class="p">.</span><span class="na">processCarReturn</span><span class="p">(</span>
+</span><a id="__codelineno-13-36" name="__codelineno-13-36" href="#__codelineno-13-36"></a><span class="hll"><span class="w">                </span><span class="n">carInfo</span><span class="p">.</span><span class="na">make</span><span class="p">,</span>
+</span><a id="__codelineno-13-37" name="__codelineno-13-37" href="#__codelineno-13-37"></a><span class="hll"><span class="w">                </span><span class="n">carInfo</span><span class="p">.</span><span class="na">model</span><span class="p">,</span>
+</span><a id="__codelineno-13-38" name="__codelineno-13-38" href="#__codelineno-13-38"></a><span class="hll"><span class="w">                </span><span class="n">carInfo</span><span class="p">.</span><span class="na">year</span><span class="p">,</span>
+</span><a id="__codelineno-13-39" name="__codelineno-13-39" href="#__codelineno-13-39"></a><span class="hll"><span class="w">                </span><span class="n">carNumber</span><span class="p">,</span>
+</span><a id="__codelineno-13-40" name="__codelineno-13-40" href="#__codelineno-13-40"></a><span class="hll"><span class="w">                </span><span class="n">carInfo</span><span class="p">.</span><span class="na">condition</span><span class="p">,</span>
+</span><a id="__codelineno-13-41" name="__codelineno-13-41" href="#__codelineno-13-41"></a><span class="hll"><span class="w">                </span><span class="n">rentalFeedback</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">rentalFeedback</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s">""</span><span class="p">,</span>
+</span><a id="__codelineno-13-42" name="__codelineno-13-42" href="#__codelineno-13-42"></a><span class="hll"><span class="w">                </span><span class="n">cleaningFeedback</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">cleaningFeedback</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s">""</span><span class="p">);</span>
+</span><a id="__codelineno-13-43" name="__codelineno-13-43" href="#__codelineno-13-43"></a>
+<a id="__codelineno-13-44" name="__codelineno-13-44" href="#__codelineno-13-44"></a><span class="hll"><span class="w">        </span><span class="c1">// Update the car's condition with the result from CarConditionFeedbackAgent</span>
+</span><a id="__codelineno-13-45" name="__codelineno-13-45" href="#__codelineno-13-45"></a><span class="hll"><span class="w">        </span><span class="n">carInfo</span><span class="p">.</span><span class="na">condition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">carConditions</span><span class="p">.</span><span class="na">generalCondition</span><span class="p">();</span>
+</span><a id="__codelineno-13-46" name="__codelineno-13-46" href="#__codelineno-13-46"></a><span class="hll">
+</span><a id="__codelineno-13-47" name="__codelineno-13-47" href="#__codelineno-13-47"></a><span class="hll"><span class="w">        </span><span class="c1">// If cleaning was not required, make the car available to rent</span>
+</span><a id="__codelineno-13-48" name="__codelineno-13-48" href="#__codelineno-13-48"></a><span class="hll"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">carConditions</span><span class="p">.</span><span class="na">cleaningRequired</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+</span><a id="__codelineno-13-49" name="__codelineno-13-49" href="#__codelineno-13-49"></a><span class="hll"><span class="w">            </span><span class="n">carInfo</span><span class="p">.</span><span class="na">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CarStatus</span><span class="p">.</span><span class="na">AVAILABLE</span><span class="p">;</span><span class="w">            </span>
+</span><a id="__codelineno-13-50" name="__codelineno-13-50" href="#__codelineno-13-50"></a><span class="hll"><span class="w">        </span><span class="p">}</span>
+</span><a id="__codelineno-13-51" name="__codelineno-13-51" href="#__codelineno-13-51"></a>
+<a id="__codelineno-13-52" name="__codelineno-13-52" href="#__codelineno-13-52"></a><span class="w">        </span><span class="n">carInfo</span><span class="p">.</span><span class="na">persist</span><span class="p">();</span>
+<a id="__codelineno-13-53" name="__codelineno-13-53" href="#__codelineno-13-53"></a>
+<a id="__codelineno-13-54" name="__codelineno-13-54" href="#__codelineno-13-54"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">carConditions</span><span class="p">.</span><span class="na">generalCondition</span><span class="p">();</span>
+<a id="__codelineno-13-55" name="__codelineno-13-55" href="#__codelineno-13-55"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-13-56" name="__codelineno-13-56" href="#__codelineno-13-56"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>What changed?</strong></p>
+<h3 id="1-injection">1: Injection<a class="headerlink" href="#1-injection" title="Permanent link"></a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nd">@Inject</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">CarProcessingWorkflow</span><span class="w"> </span><span class="n">carProcessingWorkflow</span><span class="p">;</span>
+</code></pre></div>
+<p>The workflow interface is injected just like any other CDI bean.
+Quarkus LangChain4j generates the implementation automatically.</p>
+<h3 id="2-workflow-invocation">2: Workflow Invocation<a class="headerlink" href="#2-workflow-invocation" title="Permanent link"></a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">CarConditions</span><span class="w"> </span><span class="n">carConditions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">carProcessingWorkflow</span><span class="p">.</span><span class="na">processCarReturn</span><span class="p">(</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">                </span><span class="n">carInfo</span><span class="p">.</span><span class="na">make</span><span class="p">,</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">                </span><span class="n">carInfo</span><span class="p">.</span><span class="na">model</span><span class="p">,</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">                </span><span class="n">carInfo</span><span class="p">.</span><span class="na">year</span><span class="p">,</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">                </span><span class="n">carNumber</span><span class="p">,</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">                </span><span class="n">carInfo</span><span class="p">.</span><span class="na">condition</span><span class="p">,</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">                </span><span class="n">rentalFeedback</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">rentalFeedback</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s">""</span><span class="p">,</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">                </span><span class="n">cleaningFeedback</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">cleaningFeedback</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s">""</span><span class="p">);</span>
+</code></pre></div>
+<p>Instead of calling agents individually, we call the workflow.
+It returns a <code>CarConditions</code> object containing results from both agents.</p>
+<h3 id="3-using-the-results">3: Using the Results<a class="headerlink" href="#3-using-the-results" title="Permanent link"></a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1">// Update the car's condition with the result from CarConditionFeedbackAgent</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="n">carInfo</span><span class="p">.</span><span class="na">condition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">carConditions</span><span class="p">.</span><span class="na">generalCondition</span><span class="p">();</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c1">// If cleaning was not required, make the car available to rent</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">carConditions</span><span class="p">.</span><span class="na">cleaningRequired</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">  </span><span class="n">carInfo</span><span class="p">.</span><span class="na">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CarStatus</span><span class="p">.</span><span class="na">AVAILABLE</span><span class="p">;</span><span class="w">            </span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="p">}</span>
+</code></pre></div>
+<p>We extract both the updated condition and whether a cleaning is required, then update the car accordingly.</p>
+<hr>
+<h2 id="try-it-out">Try It Out<a class="headerlink" href="#try-it-out" title="Permanent link"></a></h2>
+<p>Start the application:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>./mvnw<span class="w"> </span>quarkus:dev
+</code></pre></div>
+<p>Open your browser to <a href="http://localhost:8080" target="_blank">http://localhost:8080</a>.</p>
+<h3 id="notice-the-new-ui">Notice the New UI<a class="headerlink" href="#notice-the-new-ui" title="Permanent link"></a></h3>
+<p>The <strong>Fleet Status</strong> section now has a <strong>“Condition”</strong> column showing each car’s current state:</p>
+<p><img alt="Agentic UI with Condition Column" class="center" src="../../images/agentic-UI-2.png"></p>
+<h3 id="test-the-workflow">Test the Workflow<a class="headerlink" href="#test-the-workflow" title="Permanent link"></a></h3>
+<p>In the <code>Returns &gt; Rental Return</code> section, enter feedback that indicates a problem with a car:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>there has clearly been a fire in the trunk of this car
+</code></pre></div>
+<p>Click <strong>Return</strong>.</p>
+<p><strong>What happens?</strong></p>
+<ol>
+<li>The <code>CleaningAgent</code> analyzes the feedback and likely requests cleaning (interior/exterior)</li>
+<li>The <code>CarConditionFeedbackAgent</code> analyzes the feedback and updates the condition to reflect fire damage</li>
+<li>The car’s status is updated to <code>AT_CLEANING</code></li>
+<li>The <strong>Condition</strong> column in the Fleet Status updates to show the new condition</li>
+</ol>
+<h3 id="check-the-logs">Check the Logs<a class="headerlink" href="#check-the-logs" title="Permanent link"></a></h3>
+<p>You should see both agents executing in sequential:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>🚗 CleaningTool result: Cleaning requested for Toyota Camry (2021), Car #4:
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>- Interior cleaning
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>- Exterior wash
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>Additional notes: Fire damage requires thorough cleaning
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>[CarConditionFeedbackAgent response]: Fire damage in trunk, requires inspection and repair
+</code></pre></div>
+<p>Notice how the workflow <strong>coordinated both agents</strong> automatically!</p>
+<hr>
+<h2 id="how-data-flows-through-the-workflow">How Data Flows Through the Workflow<a class="headerlink" href="#how-data-flows-through-the-workflow" title="Permanent link"></a></h2>
+<p>Let’s trace a complete example:</p>
+<h3 id="example-fire-in-the-trunk">Example: “Fire in the trunk”<a class="headerlink" href="#example-fire-in-the-trunk" title="Permanent link"></a></h3>
+<div class="panzoom-box" data-key="alt" id="panzoom0" oncontextmenu="return false;">
+    
+    <nav class="panzoom-nav">
+    <button class="panzoom-info panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm169.8-90.7c7.9-22.3 29.1-37.3 52.8-37.3l58.3 0c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24l0-13.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1l-58.3 0c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"></path>
+    </svg>
+</button><button class="panzoom-reset panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M125.7 160l50.3 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L48 224c-17.7 0-32-14.3-32-32L16 64c0-17.7 14.3-32 32-32s32 14.3 32 32l0 51.2L97.6 97.6c87.5-87.5 229.3-87.5 316.8 0s87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3s-163.8-62.5-226.3 0L125.7 160z"></path>
+    </svg>
+</button><button class="panzoom-max panzoom-button">
+    <svg class="panzoom-icon" viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"></path>
+    </svg>
+</button><button class="panzoom-min panzoom-button panzoom-hidden">
+    <svg class="panzoom-icon" viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+        <path d="M160 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96zM32 320c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM352 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 320c-17.7 0-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0z"></path>
+    </svg>
+</button>
+    </nav>
+    <pre class="mermaid"><code>sequenceDiagram
+    participant Service as CarManagementService
+    participant Workflow as CarProcessingWorkflow
+    participant Scope as AgenticScope
+    participant Agent1 as CleaningAgent
+    participant Agent2 as CarConditionFeedbackAgent
+
+    Service-&gt;&gt;Workflow: processCarReturn(carMake="Toyota", ..., rentalFeedback="fire in trunk")
+
+    Note over Workflow: Initialize AgenticScope
+    Workflow-&gt;&gt;Scope: Store all inputs: {carMake: "Toyota", rentalFeedback: "fire in trunk", ...}
+
+    Note over Workflow: Execute Agent 1
+    Workflow-&gt;&gt;Agent1: processCleaning()
+    Agent1-&gt;&gt;Scope: Read inputs (carMake, rentalFeedback, etc.)
+    Agent1-&gt;&gt;Agent1: Analyze: Fire damage → needs cleaning
+    Agent1-&gt;&gt;Scope: Write output: {cleaningAgentResult: "Cleaning requested..."}
+
+    Note over Workflow: Execute Agent 2
+    Workflow-&gt;&gt;Agent2: analyzeForCondition()
+    Agent2-&gt;&gt;Scope: Read inputs (carMake, rentalFeedback, cleaningAgentResult, etc.)
+    Agent2-&gt;&gt;Agent2: Analyze: Fire damage → serious condition issue
+    Agent2-&gt;&gt;Scope: Write output: {carCondition: "Fire damage in trunk"}
+
+    Note over Workflow: Call @Output method
+    Workflow-&gt;&gt;Scope: Extract carCondition and cleaningAgentResult
+    Workflow-&gt;&gt;Workflow: output("Fire damage in trunk", "Cleaning requested...")
+    Workflow-&gt;&gt;Service: return CarConditions(generalCondition="Fire damage in trunk", cleaningRequired=true)
+
+    Service-&gt;&gt;Service: Update car condition and status</code></pre> 
+    <div class="panzoom-info-box panzoom-info-box-bottom panzoom-hidden">
+Hold "Alt" / "Option" to enable pan &amp; zoom
+</div>
+</div>
+<p><strong>Key Points:</strong></p>
+<ol>
+<li>All workflow inputs are stored in <code>AgenticScope</code>’s state</li>
+<li>Each agent reads what it needs from the scope’s state</li>
+<li>Each agent writes its result back to the scope’s state using its <code>outputKey</code></li>
+<li>The <code>@Output</code> method extracts specific values from the scope to build the final result</li>
+</ol>
+<hr>
+<h2 id="understanding-the-declarative-workflow-api">Understanding the Declarative Workflow API<a class="headerlink" href="#understanding-the-declarative-workflow-api" title="Permanent link"></a></h2>
+<p>The declarative API uses annotations to define workflows, making them:</p>
+<ul>
+<li><strong>Type-safe</strong>: Compile-time checking of agent interfaces</li>
+<li><strong>Readable</strong>: Clear structure showing the flow</li>
+<li><strong>Composable</strong>: Easily combine different agents even workflow-based agents</li>
+<li><strong>Maintainable</strong>: Easy to add/remove/reorder agents</li>
+<li><strong>Automatic</strong>: No manual <code>AgenticScope</code> management</li>
+</ul>
+<hr>
+<h2 id="key-takeaways">Key Takeaways<a class="headerlink" href="#key-takeaways" title="Permanent link"></a></h2>
+<ul>
+<li><strong>Workflows enable collaboration</strong>: Multiple agents work together to solve complex problems</li>
+<li><strong><code>AgenticScope</code> enables data sharing</strong>: Agents pass data through a shared context without tight coupling</li>
+<li><strong>Sequential workflows run in order</strong>: Perfect when Agent B needs Agent A’s output</li>
+<li><strong>The declarative API is powerful</strong>: Annotate interfaces, get automatic implementations</li>
+<li><strong>Type safety matters</strong>: The compiler helps catch errors before runtime</li>
+</ul>
+<hr>
+<h2 id="experiment-further">Experiment Further<a class="headerlink" href="#experiment-further" title="Permanent link"></a></h2>
+<h3 id="1-inspect-the-agenticscope">1. Inspect the <code>AgenticScope</code><a class="headerlink" href="#1-inspect-the-agenticscope" title="Permanent link"></a></h3>
+<p>Try adding different types of feedback and observe how both agents respond. Notice how they’re working with the same context!</p>
+<h3 id="2-add-more-input-to-the-condition-agent">2. Add More Input to the Condition Agent<a class="headerlink" href="#2-add-more-input-to-the-condition-agent" title="Permanent link"></a></h3>
+<p>What if you wanted to pass the car’s mileage to the condition agent? How would you:</p>
+<ol>
+<li>Add it to the workflow method signature?</li>
+<li>Add it to the agent’s method signature?</li>
+<li>Update the service to provide the mileage?</li>
+</ol>
+<h3 id="3-try-different-feedback-combinations">3. Try Different Feedback Combinations<a class="headerlink" href="#3-try-different-feedback-combinations" title="Permanent link"></a></h3>
+<p>Test these scenarios:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>Rental feedback: "Scratch on door"
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>Cleaning feedback: "Scratch remains after cleaning"
+</code></pre></div>
+<p>How does the condition agent synthesize feedback from multiple sources?</p>
+<hr>
+<h2 id="understanding-parallel-vs-sequential">Understanding Parallel vs. Sequential<a class="headerlink" href="#understanding-parallel-vs-sequential" title="Permanent link"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Why Sequential Instead of Parallel?</p>
+<p>You might notice that <code>CarConditionFeedbackAgent</code> doesn’t actually use the output from <code>CleaningAgent</code>, it only looks at the original feedback.
+This means these agents could run in <strong>parallel</strong> for better response time.</p>
+<p>We chose a <strong>sequential</strong> workflow in this step because:</p>
+<ol>
+<li>It’s simpler to understand as your first workflow</li>
+<li>It sets us up for <a href="../step-03/" target="_blank">Step 03</a>, where we’ll add more agents that DO depend on each other</li>
+</ol>
+<p>Feel free to try converting this to a parallel workflow as an experiment! Replace <code>@SequenceAgent</code> with <code>@ParallelAgent</code> and see what happens.</p>
+</div>
+<hr>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link"></a></h2>
+<details class="warning">
+<summary>Error: Cannot find symbol ‘CarConditions’</summary>
+<p>Make sure you created the <code>CarConditions.java</code> record in the <code>com.carmanagement.model</code> package.</p>
+</details>
+<details class="warning">
+<summary>Workflow not updating car condition</summary>
+<p>Check that:</p>
+<ul>
+<li>The <code>CleaningAgent</code> has <code>outputKey = "cleaningAgentResult"</code></li>
+<li>The <code>CarConditionFeedbackAgent</code> has <code>outputKey = "carCondition"</code></li>
+<li>The <code>@Output</code> method parameter names match these output names exactly</li>
+</ul>
+</details>
+<details class="warning">
+<summary>UI not showing Condition column</summary>
+<p>Make sure you copied the updated UI files from <code>step-02</code> (see “Option 1: Continue from Step 01” section above)</p>
+</details>
+<hr>
+<h2 id="whats-next">What’s Next?<a class="headerlink" href="#whats-next" title="Permanent link"></a></h2>
+<p>You’ve successfully built your first multi-agent workflow!
+You learned how agents collaborate through <code>AgenticScope</code> and how sequential workflows coordinate their execution.</p>
+<p>In <strong>Step 03</strong>, you’ll learn about <strong>composing Multiple Agentic Workflows</strong>, combining sequential, parallel, and conditional workflows to build sophisticated agent systems!</p>
+<p><a href="../step-03/">Continue to Step 03 - Composing Multiple Agentic Workflows</a></p></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../step-01/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Step 1 - Implementing AI Agents">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Step 1 - Implementing AI Agents
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../step-03/" class="md-footer__link md-footer__link--next" aria-label="Next: Step 3 - Composing multiple agentic workflows">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Step 3 - Composing multiple agentic workflows
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <!--
+  Copyright (c) 2016-2022 Martin Donath <martin.donath@squidfunk.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+<!-- Copyright and theme information, adapter to have the Red Hat footer -->
+<div class="md-copyright">
+    <div class="md-copyright__highlight">
+        <a href="https://creativecommons.org/licenses/by/3.0/">CC by 3.0</a> |
+        <a href="https://www.redhat.com/en/about/privacy-policy">Privacy Policy</a>
+    </div>
+    
+    Made with
+    <a
+            href="https://squidfunk.github.io/mkdocs-material/"
+            target="_blank" rel="noopener"
+    >
+        Material for MkDocs
+    </a>
+    
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "content.tabs.link", "content.code.annotate", "navigation.instant", "navigation.indexes", "navigation.tracking", "navigation.footer", "navigation.tabs.sticky", "content.code.select", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../../assets/javascripts/panzoom.min.js"></script>
+      
+        <script src="../../assets/javascripts/zoompan.js"></script>
+      
+    
+  </body>
+</html>
