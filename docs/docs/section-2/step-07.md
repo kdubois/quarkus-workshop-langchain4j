@@ -38,14 +38,7 @@ In this step, you will:
 
 ## Understanding the A2A Protocol
 
-The [**Agent-to-Agent (A2A) protocol**](https://a2a-protocol.org/){target="_blank"} is an open protocol for AI agents to communicate across different systems and platforms.
-
-### Why A2A?
-
-- **Separation of concerns**: Different teams can develop specialized agents independently
-- **Scalability**: Distribute agent workload across multiple systems
-- **Reusability**: One agent can serve multiple client applications
-- **Technology independence**: Agents can be implemented in different languages/frameworks
+The [**Agent-to-Agent (A2A) protocol**](https://a2a-protocol.org/){target="_blank"} is an open protocol for AI agents to communicate across different systems and platforms. Just like any distributed system, its advantages are **Separation of concerns**, **Scalability**, **Reusability**, and also **Technology independence** since the agents could be implemented in different languages/frameworks. This also means that you can potentially create Java-based agents for a non-Java system, and vice-versa of course.
 
 ### A2A Architecture
 
@@ -75,15 +68,6 @@ graph LR
     AP <-->|"JSON-RPC"| AE
 
 ```
-
-**The Flow:**
-
-1. **Client agent** (`PricingAgent` with `@A2AClientAgent`) sends a request to the remote agent
-2. **A2A Protocol Layer** ([JSON-RPC](https://www.jsonrpc.org/){target="_blank"}) transports the request over HTTP
-3. **AgentCard** describes the remote agent's capabilities (skills, inputs, outputs)
-4. **AgentExecutor** receives the request and orchestrates the execution
-5. **Remote AI agent** (`PricingAgent` AI service) processes the request
-6. Response flows back through the same path
 
 !!!info "Additional A2A Info"
     For more information about the A2A protocol and the actors involved, see the [A2A documentation](https://a2a-protocol.org/latest/topics/key-concepts/#core-actors-in-a2a-interactions){target="_blank"}. 
@@ -123,12 +107,7 @@ sequenceDiagram
 
 ## What Are We Going to Build?
 
-We'll convert Step 5's architecture to use a remote pricing agent:
-
-1. **Keep all HITL features**: DispositionProposalAgent, HumanApprovalAgent, value-based routing, approval workflow — all carried forward from Step 5
-2. **Keep DispositionAgent local**: Disposition logic stays in the main application (same as Step 5)
-3. **Convert PricingAgent to A2A Client**: Changes from local agent to remote A2A client
-4. **Create Remote A2A Server**: A separate Quarkus application exposing the pricing service
+We'll convert Step 5's architecture, but this time we'll convert the local `PricingAgent` to an A2A client; and we'll create a new Quarkus A2A server that will expose the logic of the original PricingAgent.
 
 **The Complete Architecture:**
 
@@ -208,21 +187,9 @@ section-2/step-07/
     └── pom.xml
 ```
 
-**Why Two Applications?**
-
-- Simulates a real-world scenario where different teams maintain different agents
-- The pricing service could be reused by multiple client applications
-- Demonstrates cross-application agent communication via A2A
-
 ---
 
-!!! warning "Warning: this chapter involves many steps"
-    In order to build out the solution, you will need to go through quite a few steps.
-    While it is entirely possible to make the code changes manually (or via copy/paste),
-    we recommend starting fresh from Step 07 with the changes already applied.
-    You will then be able to walk through this chapter and focus on the examples and suggested experiments at the end of this chapter.
-
-=== "Option 2: Start Fresh from Step 07 [Recommended]"
+=== "Option 1: Start Fresh from Step 07 [Recommended]"
 
     Navigate to the complete `section-2/step-07/multi-agent-system` directory:
     
@@ -230,53 +197,16 @@ section-2/step-07/
     cd section-2/step-07/multi-agent-system
     ```
 
-=== "Option 1: Continue from Step 06"
+=== "Option 2: Continue from Step 06"
 
-    If you want to continue building on your previous code, place yourself at the root of your project and copy the updated files:
-    
-    === "Linux / macOS"
-        ```bash
-        cp ../step-07/multi-agent-system/pom.xml ./pom.xml
-        cp ../step-07/multi-agent-system/src/main/java/com/carmanagement/model/CarInfo.java ./src/main/java/com/carmanagement/model/CarInfo.java
-        cp ../step-07/multi-agent-system/src/main/java/com/carmanagement/model/CarStatus.java ./src/main/java/com/carmanagement/model/CarStatus.java
-        cp ../step-07/multi-agent-system/src/main/resources/META-INF/resources/css/styles.css ./src/main/resources/META-INF/resources/css/styles.css
-        cp ../step-07/multi-agent-system/src/main/resources/META-INF/resources/js/app.js ./src/main/resources/META-INF/resources/js/app.js
-        cp ../step-07/multi-agent-system/src/main/resources/META-INF/resources/index.html ./src/main/resources/META-INF/resources/index.html
-        cp ../step-07/multi-agent-system/src/main/resources/import.sql ./src/main/resources/import.sql
-        ```
-    
-    === "Windows"
-        ```cmd
-        copy ..\step-07\multi-agent-system\pom.xml .\pom.xml
-        copy ..\step-07\multi-agent-system\src\main\java\com\carmanagement\model\CarInfo.java .\src\main\java\com\carmanagement\model\CarInfo.java
-        copy ..\step-07\multi-agent-system\src\main\java\com\carmanagement\model\CarStatus.java .\src\main\java\com\carmanagement\model\CarStatus.java
-        copy ..\step-07\multi-agent-system\src\main\resources\META-INF\resources\css\styles.css .\src\main\resources\META-INF\resources\css\styles.css
-        copy ..\step-07\multi-agent-system\src\main\resources\META-INF\resources\js\app.js .\src\main\resources\META-INF\resources\js\app.js
-        copy ..\step-07\multi-agent-system\src\main\resources\META-INF\resources\index.html .\src\main\resources\META-INF\resources\index.html
-        copy ..\step-07\multi-agent-system\src\main\resources\import.sql .\src\main\resources\import.sql
-        ```
+    Follow the steps below to convert the PricingAgent.
+ 
 
----
+## Convert PricingAgent to A2A Client
 
-## Part 1: Convert PricingAgent to A2A Client
+The only back-end change needed in the main application is converting the `PricingAgent` from a local agent to an A2A client.
 
-The only change needed in the main application is converting the `PricingAgent` from a local agent to an A2A client.
-
-### Step 1: Update the PricingAgent to A2A Client
-
-**This is the key change from Step 5!** The `PricingAgent` was a local agent with detailed pricing guidelines, depreciation tables, and an `@Output` post-processor. Now it becomes a simple client that delegates to the remote service.
-
-**Step 5 Version (Local):**
-
-- Had detailed `@SystemMessage` with pricing guidelines and depreciation tables
-- Had `@Output` method to normalize value format
-- Made decisions locally using AI
-
-**Step 7 Version (A2A Client):**
-
-- Uses `@A2AClientAgent` to connect to remote service
-- Delegates all pricing logic to the remote service
-- No `@Output` method needed — the remote service handles formatting
+As a reminder, the `PricingAgent` had detailed pricing guidelines, depreciation tables, and an `@Output` post-processor. Now it becomes a simple client that delegates to the remote service. 
 
 In `src/main/java/com/carmanagement/agentic/agents`, update `PricingAgent.java`:
 
@@ -304,33 +234,27 @@ String estimateValue(String carMake, String carModel, Integer carYear, String ca
 
 These parameters are sent to the remote agent as task inputs. The parameters match exactly what the remote PricingAgent expects (same as Step 5's local version).
 
-#### How It Works
-
 1. When this method is called, Quarkus LangChain4j:
     1. Creates an A2A Task with the method parameters as inputs
     2. Sends the task to the remote server via JSON-RPC
     3. Waits for the remote agent to complete the task
     4. Returns the result as a String
 
-2. No manual HTTP requests needed
-3. Type-safe: compile-time checking of parameters
-4. Automatic error handling and retries
-
 ---
 
-## Part 2: Build the Remote A2A Server
+## Build the Remote A2A Server
 
 Now let's build the remote pricing service that will handle A2A requests from the main application.
 
-Navigate to the remote-a2a-agent directory:
+Navigate to the remote-a2a-agent directory (this is a separate, new project):
 
 ```bash
 cd section-2/step-07/remote-a2a-agent
 ```
 
-### Step 2: Create the PricingAgent (AI Service)
+### Create the new A2A-based PricingAgent
 
-The AI agent that estimates vehicle market values — the same logic that was local in Step 5.
+We'll recreate the PricingAgent from the previous chapters, with a few small but important differences.
 
 In `src/main/java/com/demo`, create `PricingAgent.java`:
 
@@ -340,18 +264,12 @@ In `src/main/java/com/demo`, create `PricingAgent.java`:
 
 **Key Points:**
 
-- **`@RegisterAiService`**: Registers this as an AI service
-- **System message**: Identical to step-05's local PricingAgent — same pricing guidelines and depreciation tables
-- **Parameters**: `carMake`, `carModel`, `carYear`, `carCondition` — exactly matching the client's method signature
-- **No tools needed**: Pricing is purely LLM-based, no tool invocation
+- **`@RegisterAiService`**: Registers this as an AI service (**not @Agent**!)
+- **System message** and **Parameters**: stay exactly the same
 
-!!!note "AI Service vs. Agentic Agent"
-    Notice this is a **traditional AI service** (from Section 1), not an agentic workflow. 
-    The A2A server can expose both types.
+### Create an A2A AgentCard
 
-### Step 3: Create the AgentCard
-
-The **AgentCard** describes the agent's capabilities, skills, and interface.
+The A2A protocol requires an **AgentCard** which describes the agent's capabilities, skills, and interface so the client knows what the Agent is all about.
 
 In `src/main/java/com/demo`, create `PricingAgentCard.java`:
 
@@ -359,7 +277,7 @@ In `src/main/java/com/demo`, create `PricingAgentCard.java`:
 --8<-- "../../section-2/step-07/remote-a2a-agent/src/main/java/com/demo/PricingAgentCard.java"
 ```
 
-**Let's break it down:**
+**Let's break this AgentCard down:**
 
 #### `@PublicAgentCard` Annotation
 
@@ -370,11 +288,13 @@ public AgentCard agentCard();
 ```
 
 This makes the AgentCard available at the `/card` endpoint. 
-Clients can query this endpoint to discover the agent's capabilities.
 
 #### AgentCard Components
 
 **Basic Information:**
+
+This part contains the agent's name and description, the url it runs on, and the version.
+
 ```java
 .name("Pricing Agent")
 .description("Estimates the market value of a vehicle based on make, model, year, and condition.")
@@ -383,6 +303,10 @@ Clients can query this endpoint to discover the agent's capabilities.
 ```
 
 **Capabilities:**
+
+The Capabilities part communicates the capabilities of the agent. In this case,
+the agent is capable of streaming, but not of transmitting push notifications or
+give a history of state transitions.
 ```java
 .capabilities(new AgentCapabilities.Builder()
         .streaming(true)
@@ -392,6 +316,9 @@ Clients can query this endpoint to discover the agent's capabilities.
 ```
 
 **Skills:**
+
+Skills describes a list of what the agent can do. In this case, it can estimate the pricing of vehicles.
+
 ```java
 .skills(List.of(new AgentSkill.Builder()
     .id("pricing")
@@ -401,18 +328,18 @@ Clients can query this endpoint to discover the agent's capabilities.
     .build()))
 ```
 
-Skills describe what the agent can do. This helps clients discover appropriate agents for their needs.
-
 **Transport Protocol:**
+
+The transport protocol tells the client that, in our case, the agent communicates via JSON-RPC over HTTP.
+
 ```java
 .preferredTransport(TransportProtocol.JSONRPC.asString())
 .additionalInterfaces(List.of(
         new AgentInterface(TransportProtocol.JSONRPC.asString(), "http://localhost:8888")))
 ```
 
-Specifies that this agent communicates via JSON-RPC over HTTP.
 
-### Step 4: Create the AgentExecutor
+### Create an AgentExecutor
 
 The **AgentExecutor** handles incoming A2A requests and orchestrates the AI agent.
 
