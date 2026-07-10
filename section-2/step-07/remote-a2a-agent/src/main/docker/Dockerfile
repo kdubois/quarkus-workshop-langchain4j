@@ -1,7 +1,7 @@
 FROM icr.io/appcafe/websphere-liberty:kernel-java21-openj9-ubi-minimal AS base
 
 ## Endpoints
-EXPOSE 9080
+EXPOSE 8888
 
 ## TLS
 #ENV TLS true
