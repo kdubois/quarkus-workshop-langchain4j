@@ -38,7 +38,7 @@ public interface CleaningAgent {
         Car Number: {{carNumber}}
         
         Cleaning Request:
-        {cleaningRequest}
+        {{cleaningRequest}}
     """)
     String processCleaning(
         @V("carMake") String carMake,
